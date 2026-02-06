@@ -95,24 +95,24 @@ noBtn.addEventListener("mouseover", () => {
   noBtn.style.top = Math.random()*(window.innerHeight-120)+"px";
 });
 
-// Yes button click - show next message
+// Yes button click - show next message (cycles through)
 yesBtn.addEventListener("click", () => {
-  if(currentMessageIndex < messages.length){
-    // Hide old message
-    firstMsg.classList.remove("show");
+  // Hide old message
+  firstMsg.classList.remove("show");
 
-    // Small timeout for fade effect
+  // Small timeout for fade effect
+  setTimeout(() => {
+    firstMsg.textContent = messages[currentMessageIndex];
+    firstMsg.classList.add("show");
+
+    // Move to next message, loop back if at end
+    currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+
+    // After 30 sec, freeze No button
     setTimeout(() => {
-      firstMsg.textContent = messages[currentMessageIndex];
-      firstMsg.classList.add("show");
-      currentMessageIndex++;
-
-      // After 30 sec, freeze No button
-      setTimeout(() => {
-        noFrozen = true;
-      }, 30000);
-    }, 300); // fade out/in
-  }
+      noFrozen = true;
+    }, 30000);
+  }, 300);
 });
 
 // No button click - after freeze, show video + gifts
