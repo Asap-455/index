@@ -28,7 +28,7 @@
     display:none; 
     color:#fff; 
     opacity:0; 
-    transition: opacity 1s ease;
+    transition: opacity 0.5s ease;
   }
   #firstMsg.show { opacity:1; display:block; }
 </style>
@@ -41,7 +41,7 @@
   <button id="yes">Yes 😍</button>
   <button id="no">No 🙈</button>
 
-  <div id="firstMsg">❌ No nu phado, ✅ Yes nu nahi 😜</div>
+  <div id="firstMsg"></div>
 
   <!-- VIDEO -->
   <div id="love">
@@ -78,57 +78,59 @@ const love = document.getElementById("love");
 const gifts = document.getElementById("gifts");
 const firstMsg = document.getElementById("firstMsg");
 
-let firstClickDone = false;  // track first Yes click
-let noFrozen = false; // track if No button is frozen
+// Messages array
+const messages = [
+  "❌ No nu phado, ✅ Yes nu nahi 😜",
+  "😲 Hoya phado!",
+  "🙈 Kya hoya phadya nahi ja raha!"
+];
 
-// No button hover move
+let currentMessageIndex = 0;  // track current message
+let noFrozen = false; // No button freeze after 30 sec
+
+// No button hover
 noBtn.addEventListener("mouseover", () => {
-  if(noFrozen) return; // freeze after 30 sec
+  if(noFrozen) return;
   noBtn.style.left = Math.random()*(window.innerWidth-120)+"px";
   noBtn.style.top = Math.random()*(window.innerHeight-120)+"px";
 });
 
-// Yes button click - only show message
+// Yes button click - show next message
 yesBtn.addEventListener("click", () => {
-  if(!firstClickDone){
-    firstMsg.classList.add("show");
-    yesBtn.disabled = true;
-    firstClickDone = true;
+  if(currentMessageIndex < messages.length){
+    // Hide old message
+    firstMsg.classList.remove("show");
 
-    // 30 sec later, freeze No button & enable click on No
+    // Small timeout for fade effect
     setTimeout(() => {
-      noFrozen = true;
-      yesBtn.disabled = true; // Yes now inactive
-    }, 30000);
+      firstMsg.textContent = messages[currentMessageIndex];
+      firstMsg.classList.add("show");
+      currentMessageIndex++;
 
-    // 1 min later hide message
-    setTimeout(() => {
-      firstMsg.classList.remove("show");
-    }, 60000);
-
-    return;
+      // After 30 sec, freeze No button
+      setTimeout(() => {
+        noFrozen = true;
+      }, 30000);
+    }, 300); // fade out/in
   }
 });
 
-// No button click - after freeze, go to video page
+// No button click - after freeze, show video + gifts
 noBtn.addEventListener("click", () => {
   if(noFrozen){
-    // Hide buttons
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
 
-    // Show video
     love.style.display = "block";
     setTimeout(()=>love.scrollIntoView({behavior:"smooth"}),300);
 
-    // Show gifts
     setTimeout(()=>{
       gifts.style.display="block";
       gifts.scrollIntoView({behavior:"smooth"});
     },1500);
 
     // Reset flags if needed
-    firstClickDone = false;
+    currentMessageIndex = 0;
     noFrozen = false;
   }
 });
