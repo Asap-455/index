@@ -36,7 +36,7 @@
 <body>
 
 <div class="container">
-  <h1>Hey Disha 💖<br>Will you be my Valentine?</h1>
+  <h1>Hey Bavneet 💖<br>Will you be my Valentine?</h1>
 
   <button id="yes">Yes 😍</button>
   <button id="no">No 🙈</button>
@@ -78,8 +78,9 @@ const love = document.getElementById("love");
 const gifts = document.getElementById("gifts");
 const firstMsg = document.getElementById("firstMsg");
 
-let yesRun = false; // Yes button move nahi karega
-let clickedOnce = false; // Track first click
+let yesRun = false; 
+let firstClickDone = false;  // track first click
+let secondClickReady = false; // track second click availability
 
 // No button move on hover
 noBtn.addEventListener("mouseover", () => {
@@ -87,7 +88,7 @@ noBtn.addEventListener("mouseover", () => {
   noBtn.style.top = Math.random()*(window.innerHeight-120)+"px";
 });
 
-// Yes button move if yesRun true
+// Yes button hover (if yesRun is true)
 yesBtn.addEventListener("mouseover", () => {
   if(!yesRun) return;
   yesBtn.style.position="absolute";
@@ -97,31 +98,40 @@ yesBtn.addEventListener("mouseover", () => {
 
 // Yes button click
 yesBtn.addEventListener("click", () => {
-  if(!clickedOnce){
-    // First click: show fancy message
-    firstMsg.classList.add("show");
-    clickedOnce = true;
-    yesBtn.disabled = true;
 
-    // Hide message and enable button after 1 minute
+  // FIRST CLICK: show fancy message
+  if(!firstClickDone){
+    firstMsg.classList.add("show");
+    yesBtn.disabled = true;
+    firstClickDone = true;
+
+    // After 1 minute: hide message & allow second click
     setTimeout(() => {
       firstMsg.classList.remove("show");
-      clickedOnce = false;
       yesBtn.disabled = false;
-    }, 60000); // 60 seconds
+      secondClickReady = true;
+    }, 60000);
 
     return;
   }
 
-  // 1 minute ke baad click: normal action
-  yesBtn.style.display = "none";
-  noBtn.style.display = "none";
-  love.style.display = "block";
-  setTimeout(()=>love.scrollIntoView({behavior:"smooth"}),300);
-  setTimeout(()=>{
-    gifts.style.display="block";
-    gifts.scrollIntoView({behavior:"smooth"});
-  },1500);
+  // SECOND CLICK: only after 1 minute
+  if(secondClickReady){
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+
+    love.style.display = "block";
+    setTimeout(()=>love.scrollIntoView({behavior:"smooth"}),300);
+
+    setTimeout(()=>{
+      gifts.style.display="block";
+      gifts.scrollIntoView({behavior:"smooth"});
+    },1500);
+
+    // Reset flags (optional, if you want multiple rounds)
+    firstClickDone = false;
+    secondClickReady = false;
+  }
 });
 
 // Open gifts
@@ -133,4 +143,3 @@ function openGift(num, btn){
 
 </body>
 </html>
-
