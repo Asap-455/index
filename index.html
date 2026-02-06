@@ -41,7 +41,7 @@
   #yes {
     background: #ff4d6d;
     color: white;
-    position: static; /* Ensure it stays fixed */
+    position: static; /* Ensure fixed position */
   }
 
   #no {
@@ -158,24 +158,36 @@
   const love = document.getElementById("love");
   const gifts = document.getElementById("gifts");
 
-  let yesRun = false;  // Starting se false, button move nahi karega
+  let yesRun = false;  // Yes button move nahi karega
+  let clickedOnce = false; // Pehle click ka track
 
   noBtn.addEventListener("mouseover", () => {
     noBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
     noBtn.style.top = Math.random() * (window.innerHeight - 120) + "px";
   });
- 
-  yesBtn.addEventListener("mouseover", () => {
-    if (!yesRun) return; // Move nahi karega
 
+  yesBtn.addEventListener("mouseover", () => {
+    if (!yesRun) return;
     yesBtn.style.position = "absolute";
     yesBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
     yesBtn.style.top = Math.random() * (window.innerHeight - 120) + "px";
   });
 
-  // setTimeout hata diya hai, ab zarurat nahi
-
   yesBtn.addEventListener("click", () => {
+    if (!clickedOnce) {
+      alert("No nu phado, yes nu nahi");
+      clickedOnce = true;
+      yesBtn.disabled = true;  // Disable button
+
+      setTimeout(() => {
+        clickedOnce = false;
+        yesBtn.disabled = false;  // 30 sec baad enable
+      }, 30000);
+
+      return;
+    }
+
+    // 30 sec baad second click pe ye chalega
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
 
