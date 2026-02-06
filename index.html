@@ -78,59 +78,58 @@ const love = document.getElementById("love");
 const gifts = document.getElementById("gifts");
 const firstMsg = document.getElementById("firstMsg");
 
-let yesRun = false; 
-let firstClickDone = false;  // track first click
-let secondClickReady = false; // track second click availability
+let firstClickDone = false;  // track first Yes click
+let noFrozen = false; // track if No button is frozen
 
-// No button move on hover
+// No button hover move
 noBtn.addEventListener("mouseover", () => {
+  if(noFrozen) return; // freeze after 30 sec
   noBtn.style.left = Math.random()*(window.innerWidth-120)+"px";
   noBtn.style.top = Math.random()*(window.innerHeight-120)+"px";
 });
 
-// Yes button hover (if yesRun is true)
-yesBtn.addEventListener("mouseover", () => {
-  if(!yesRun) return;
-  yesBtn.style.position="absolute";
-  yesBtn.style.left=Math.random()*(window.innerWidth-120)+"px";
-  yesBtn.style.top=Math.random()*(window.innerHeight-120)+"px";
-});
-
-// Yes button click
+// Yes button click - only show message
 yesBtn.addEventListener("click", () => {
-
-  // FIRST CLICK: show fancy message
   if(!firstClickDone){
     firstMsg.classList.add("show");
     yesBtn.disabled = true;
     firstClickDone = true;
 
-    // After 1 minute: hide message & allow second click
+    // 30 sec later, freeze No button & enable click on No
+    setTimeout(() => {
+      noFrozen = true;
+      yesBtn.disabled = true; // Yes now inactive
+    }, 30000);
+
+    // 1 min later hide message
     setTimeout(() => {
       firstMsg.classList.remove("show");
-      yesBtn.disabled = false;
-      secondClickReady = true;
     }, 60000);
 
     return;
   }
+});
 
-  // SECOND CLICK: only after 1 minute
-  if(secondClickReady){
+// No button click - after freeze, go to video page
+noBtn.addEventListener("click", () => {
+  if(noFrozen){
+    // Hide buttons
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
 
+    // Show video
     love.style.display = "block";
     setTimeout(()=>love.scrollIntoView({behavior:"smooth"}),300);
 
+    // Show gifts
     setTimeout(()=>{
       gifts.style.display="block";
       gifts.scrollIntoView({behavior:"smooth"});
     },1500);
 
-    // Reset flags (optional, if you want multiple rounds)
+    // Reset flags if needed
     firstClickDone = false;
-    secondClickReady = false;
+    noFrozen = false;
   }
 });
 
