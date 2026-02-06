@@ -53,12 +53,17 @@
 
   <!-- GIFTS -->
   <div id="gifts">
-    <h2> Never mind… but this gift is for you MOTIYEEE 🥰</h2>
+    <h2>Never mind… but this gift is for you MOTIYEEE 🥰</h2>
     <div class="gifts-row">
+      <!-- First gift as video, image size -->
       <div class="gift-box">
         <button class="gift-btn" onclick="openGift(1, this)">🎁 Gift 1</button>
-        <img src="image2.JPG" class="gift-img" id="img1">
+        <video class="gift-img" id="img1" style="display:none;" controls>
+          <source src="gift1.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       </div>
+      <!-- Other gifts as images -->
       <div class="gift-box">
         <button class="gift-btn" onclick="openGift(2, this)">🎁 Gift 2</button>
         <img src="image1.JPG" class="gift-img" id="img2">
@@ -97,21 +102,12 @@ noBtn.addEventListener("mouseover", () => {
 
 // Yes button click - show next message (cycles through)
 yesBtn.addEventListener("click", () => {
-  // Hide old message
   firstMsg.classList.remove("show");
-
-  // Small timeout for fade effect
   setTimeout(() => {
     firstMsg.textContent = messages[currentMessageIndex];
     firstMsg.classList.add("show");
-
-    // Move to next message, loop back if at end
     currentMessageIndex = (currentMessageIndex + 1) % messages.length;
-
-    // After 30 sec, freeze No button
-    setTimeout(() => {
-      noFrozen = true;
-    }, 30000);
+    setTimeout(() => { noFrozen = true; }, 30000);
   }, 300);
 });
 
@@ -120,16 +116,12 @@ noBtn.addEventListener("click", () => {
   if(noFrozen){
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
-
     love.style.display = "block";
     setTimeout(()=>love.scrollIntoView({behavior:"smooth"}),300);
-
     setTimeout(()=>{
       gifts.style.display="block";
       gifts.scrollIntoView({behavior:"smooth"});
     },1500);
-
-    // Reset flags if needed
     currentMessageIndex = 0;
     noFrozen = false;
   }
@@ -144,5 +136,3 @@ function openGift(num, btn){
 
 </body>
 </html>
-
-
